@@ -33,19 +33,34 @@ function makeResponsive() {
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
     
-    d3.csv('/D3-Challenge/StarterCode/assets/data/data.csv').then(function(data){
-        // data.forEach(function(d) {
-        //     d.income = +d.income;
-        //     d.obesity = +d.obesity;
-        // });
-        console.log('test')
+    d3.csv('/D3-Challenge/data/data.csv').then(function(healthdata){
+        healthdata.forEach(function(data) {
+            data.income = +data.income;
+            data.obesity = +data.obesity;
+            console.log(data.obesity)
+        });
+        
+        var xScale = d3.scaleLinear()
+            .domain(d3.extent(healthdata, d => d.income))
+            .range([0, width]);
+        
+        var yScale = d3.scaleLinear()
+            .domain(d3.extent(healthdata, d => d.obesity))
+            .range([height, 0]);
+
+        var xAxis = d3.axisBottom(xScale);
+        var yAxis = d3.axisLeft(yScale)
+
+        chartGroup.append("g")
+            .attr("transform", `translate(0, ${height})`)
+            .call(xAxis);
+        
+        chartGroup.append("g")
+            .call(yAxis)
+   
     })
     
 };
 
-d3.csv('/D3-Challenge/data/data.csv').then(function(data){
-    // data.forEach(function(d) {
-    //     d.income = +d.income;
-    //     d.obesity = +d.obesity;
-    // });
-    console.log(data)})
+makeResponsive();
+d3.select(window).on("resize", makeResponsive);
