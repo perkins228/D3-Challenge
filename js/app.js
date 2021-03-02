@@ -33,10 +33,10 @@ function makeResponsive() {
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
     
-    var yLabelWidth = 50;
+    var yLabelWidth = 20;
     var yLabelHeight = svgHeight / 2;
 
-    var xLabelWidth = svgWidth/2;
+    var xLabelWidth = svgWidth / 2;
     var xLabelHeight = svgHeight -10;
     
     d3.csv('/D3-Challenge/data/data.csv').then(function(healthdata){
