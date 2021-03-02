@@ -17,7 +17,7 @@ function makeResponsive() {
       top: 50,
       bottom: 50,
       right: 50,
-      left: 50
+      left: 60
     };
   
     var height = svgHeight - margin.top - margin.bottom;
@@ -26,14 +26,15 @@ function makeResponsive() {
     var svg = d3
         .select("#scatter")
         .append("svg")
-        .attr("height", svgHeight)
-        .attr("width", svgWidth);
+        .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
+        // .attr("height", svgHeight)
+        // .attr("width", svgWidth);
 
     var chartGroup = svg.append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
     
-    var yLabelWidth = 20;
+    var yLabelWidth = 15;
     var yLabelHeight = svgHeight / 2;
 
     var xLabelWidth = svgWidth / 2;
@@ -47,11 +48,11 @@ function makeResponsive() {
         });
         
         var xScale = d3.scaleLinear()
-            .domain([d3.min(healthdata, d => d.income)-1000, d3.max(healthdata, d => d.income)])
+            .domain([d3.min(healthdata, d => d.obesity)-1, d3.max(healthdata, d => d.obesity) + 1])
             .range([0, width]);
         
         var yScale = d3.scaleLinear()
-            .domain([d3.min(healthdata, d => d.obesity)-1, d3.max(healthdata, d => d.obesity)])
+            .domain([d3.min(healthdata, d => d.income)-1000, d3.max(healthdata, d => d.income)])
             .range([height, 0]);
 
         var xAxis = d3.axisBottom(xScale);
@@ -68,8 +69,8 @@ function makeResponsive() {
             .data(healthdata)
             .enter()
             .append("circle")
-            .attr("cx", d => xScale(d.income))
-            .attr("cy", d => yScale(d.obesity))
+            .attr("cx", d => xScale(d.obesity))
+            .attr("cy", d => yScale(d.income))
             .attr("r", "15")
             .classed("stateCircle", true);
             
@@ -78,8 +79,8 @@ function makeResponsive() {
             .enter()
             .append("text")
             .text(d=>d.abbr)
-            .attr("x", d => xScale(d.income))
-            .attr("y", d=> yScale(d.obesity) +4)
+            .attr("x", d => xScale(d.obesity))
+            .attr("y", d=> yScale(d.income) +4)
             .attr("font-size", "10px")
             .classed("stateText", true);
   
@@ -90,7 +91,7 @@ function makeResponsive() {
             .attr("transform", 'rotate(-90)')
             .attr("font-size", "20px")
             .classed("active", true)
-            .text("Obesity (%)");
+            .text("Income ($)");
         
             svg.append('g')
             .attr("transform", `translate(${xLabelWidth}, ${xLabelHeight} )`)
@@ -98,14 +99,14 @@ function makeResponsive() {
             .attr('text-anchor', 'middle')
             .attr("font-size", "20px")
             .classed("active", true)
-            .text("Income (K)");
+            .text("Obesity (%)");
     
           // Create toolTip
           var toolTip = d3.tip()
             .attr("class", "d3-tip")
             .offset([40,-80])
             .html(function(d) {
-              return (`<strong>${d.state}<hr>Obesity: ${d.obesity}%<br>Healthcare: $${d.income}<strong>`);
+              return (`<strong>${d.state}<br>Obesity: ${d.obesity}%<br>Income: $${d.income}<strong>`);
             });
            
           chartGroup.call(toolTip);
